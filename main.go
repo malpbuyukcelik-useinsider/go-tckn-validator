@@ -67,6 +67,8 @@ func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 		"https://shopiapp-dev.myshopify.com":   true,
 		"https://admin.shopify.com":            true,
 		"https://shopify.com":                  true,
+		"https://shopiapp-dev.myshopify.com":  true,
+		"http://localhost:3000":                true,  
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
