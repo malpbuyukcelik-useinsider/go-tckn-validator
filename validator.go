@@ -11,17 +11,15 @@ import (
 	"strings"
 )
 
-const (
-	nviSoapURL = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx"
-)
+const nviSoapURL = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx"
 
 type TCKNValidationRequest struct {
-	XMLName     xml.Name `xml:"TCKimlikNoDogrula"`
-	XMLNs       string   `xml:"xmlns,attr"`
+	XMLName    xml.Name `xml:"TCKimlikNoDogrula"`
+	XMLNs      string   `xml:"xmlns,attr"`
 	TCKN       int64    `xml:"TCKimlikNo"`
 	Ad         string   `xml:"Ad"`
-	Soyad      string  `xml:"Soyad"`
-	DogumYili  int     `xml:"DogumYili"`
+	Soyad      string   `xml:"Soyad"`
+	DogumYili  int      `xml:"DogumYili"`
 }
 
 // cleanName cleans and formats the name for NVI service

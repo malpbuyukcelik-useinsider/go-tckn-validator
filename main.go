@@ -31,51 +31,28 @@ func validateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Basic validation
 	if len(req.TCKN) != 11 {
-		sendResponse(w, ValidationResponse{
-			Valid: false,
-			Error: "TCKN must be 11 digits",
-		})
+		sendResponse(w, ValidationResponse{Valid: false, Error: "TCKN must be 11 digits"})
 		return
 	}
 
-	// First do basic validation
 	if !validateTCKN(req.TCKN) {
-		sendResponse(w, ValidationResponse{
-			Valid: false,
-			Error: "Invalid TCKN format",
-		})
+		sendResponse(w, ValidationResponse{Valid: false, Error: "Invalid TCKN format"})
 		return
 	}
 
-	// Validate required fields
 	if req.Ad == "" || req.Soyad == "" || req.DogumYili == 0 {
-		sendResponse(w, ValidationResponse{
-			Valid: false,
-			Error: "Ad, Soyad and DogumYili are required",
-		})
+		sendResponse(w, ValidationResponse{Valid: false, Error: "Ad, Soyad and DogumYili are required"})
 		return
 	}
 
-	// Convert names to uppercase for NVI service
-	ad := strings.ToUpper(req.Ad)
-	soyad := strings.ToUpper(req.Soyad)
-
-	// Then validate with NVI service
-	valid, err := validateWithNVI(req.TCKN, ad, soyad, req.DogumYili)
+	valid, err := validateWithNVI(req.TCKN, strings.ToUpper(req.Ad), strings.ToUpper(req.Soyad), req.DogumYili)
 	if err != nil {
-		sendResponse(w, ValidationResponse{
-			Valid: false,
-			Error: "Error validating TCKN: " + err.Error(),
-		})
+		sendResponse(w, ValidationResponse{Valid: false, Error: "Error validating TCKN: " + err.Error()})
 		return
 	}
 
-	sendResponse(w, ValidationResponse{
-		Valid: valid,
-		Error: "",
-	})
+	sendResponse(w, ValidationResponse{Valid: valid})
 }
 
 func sendResponse(w http.ResponseWriter, response ValidationResponse) {
@@ -85,7 +62,6 @@ func sendResponse(w http.ResponseWriter, response ValidationResponse) {
 
 func main() {
 	http.HandleFunc("/validate", validateHandler)
-
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
