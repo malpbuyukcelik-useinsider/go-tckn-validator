@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -60,10 +61,33 @@ func sendResponse(w http.ResponseWriter, response ValidationResponse) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "https://extensions.shopifycdn.com")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		
+		handler(w, r)
+	}
+}
+
 func main() {
-	http.HandleFunc("/validate", validateHandler)
-	log.Println("Server starting on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	http.HandleFunc("/validate", enableCORS(validateHandler))
+	
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	
+	log.Printf("Server starting on :%s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 } 
