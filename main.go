@@ -62,18 +62,28 @@ func sendResponse(w http.ResponseWriter, response ValidationResponse) {
 }
 
 func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
+	allowedOrigins := map[string]bool{
+		"https://extensions.shopifycdn.com":     true,
+		"https://shopiapp-dev.myshopify.com":   true,
+		"https://admin.shopify.com":            true,
+		"https://shopify.com":                  true,
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "https://extensions.shopifycdn.com")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-		w.Header().Set("Access-Control-Max-Age", "3600")
-		
+		origin := r.Header.Get("Origin")
+		if allowedOrigins[origin] {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+			w.Header().Set("Access-Control-Max-Age", "3600")
+		}
+
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		
+
 		handler(w, r)
 	}
 }
