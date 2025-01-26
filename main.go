@@ -76,7 +76,7 @@ func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Cache-Control, Pragma, X-Requested-With, X-HTTP-Method-Override, If-Match, If-None-Match, If-Modified-Since, If-Unmodified-Since")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Cache-Control, Pragma, Priority, X-Requested-With, X-HTTP-Method-Override, If-Match, If-None-Match, If-Modified-Since, If-Unmodified-Since, Origin, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-Dest")
 			w.Header().Set("Access-Control-Max-Age", "3600")
 		}
 
